@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  simple-todo-list:
+    container_name: simple-todo-list
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    restart: on-failure
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+      MYSQL_HOST: $MYSQL_HOST
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_PORT: $MYSQL_PORT
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+
+    ports:
+      - 8080:8080
+
+    networks:
+      - app_network
+
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    ports:
+      - 3306:3306
+
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - app_network
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+
+networks:
+  app_network:
+    driver: bridge

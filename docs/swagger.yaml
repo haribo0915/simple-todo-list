@@ -1,0 +1,125 @@
+definitions:
+  models.Task:
+    properties:
+      completed:
+        type: boolean
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: ccchang915@gmail.com
+    name: Chi-Chen Chang
+  description: API documentation for the todo list service.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: TODO APIs
+  version: "1.0"
+paths:
+  /todo:
+    post:
+      consumes:
+      - application/json
+      description: create a new task
+      parameters:
+      - description: Create Task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      responses:
+        "201":
+          description: Created
+      summary: Create a new task
+      tags:
+      - task
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: get a list of tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+      summary: Get all tasks
+      tags:
+      - task
+  /todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete task by id
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a task
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: get task by id
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+      summary: Get a task
+      tags:
+      - task
+    put:
+      consumes:
+      - application/json
+      description: Update task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Task Data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Update task
+      tags:
+      - task
+schemes:
+- http
+swagger: "2.0"
